@@ -1,6 +1,11 @@
-const { fstat } = require("fs");
+const fs = require("fs");
 const express = require("express");
 const path = require("path");
+
+module.exports = function(app) {
+    app.get("/api/notes", function(req, res) {
+        req.json(data);
+    });
 
 app.get("/api/notes", function(req, res) {
     res.json(notes);
@@ -35,5 +40,5 @@ function updateDb() {
     fs.writeFile("db/db.json",JSON.stringify(notes, "\t"), err=> {
         if (err) throw err;
         return true;
-    });
+    })};
 }

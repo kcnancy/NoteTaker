@@ -2,7 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-const app = express();
+var app = express();
 
 const PORT =process.env.PORT || 8080;
 
