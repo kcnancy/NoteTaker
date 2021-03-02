@@ -3,8 +3,8 @@ const express = require("express");
 const path = require("path");
 
 module.exports = function(app) {
-    app.get("/api/notes", function(req, res) {
-        req.json(data);
+app.get("/api/notes", function(req, res) {
+        res.json(data);
     });
 
 app.get("/api/notes", function(req, res) {
