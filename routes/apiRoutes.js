@@ -4,18 +4,27 @@ const path = require("path");
 
 module.exports = function(app) {
 app.get("/api/notes", function(req, res) {
-        res.json(data);
+    fs.readFile("./db/db.json", "utf-8", function(err, data){
+        if (err) throw err
+        var notes = JSON.parse(data);
+            res.json(notes);
+        })
     });
-
-app.get("/api/notes", function(req, res) {
-    res.json(notes);
-});
 
 app.post("/api/notes", function(req, res){
     let newNote =req.body;
-    notes.push(newNote);
-    updateDb();
-    return console.log("added new note: "+newNote.title);
+    fs.readFile("./db/db.json", "utf-8", function(err, data){
+        if (err) throw err
+        var notes = JSON.parse(data);
+        notes.push(newNote); 
+        notes = JSON.stringify(notes);
+        fs.writeFile("./db/db.json", notes, function(err){
+            if (err) throw err
+        })
+            
+        })
+    res.json(newNote);
+    
 });
 
 app.get("/api/notes/:id", function(req, res) {
@@ -26,14 +35,6 @@ app.delete("/api/notes/:id", function(req, res) {
     notes.splice(req.params.id, 1);
     updateDb();
     console.log("deleted note"+params.id);
-});
-
-app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "../public/notes.html"));
-});
-
-app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 function updateDb() {
