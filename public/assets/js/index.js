@@ -107,6 +107,8 @@ const handleNewNoteView = (e) => {
 };
 
 const handleRenderSaveBtn = () => {
+  noteTitle.removeAttribute('readonly');
+  noteText.removeAttribute('readonly');
   if (!noteTitle.value.trim() || !noteText.value.trim()) {
     hide(saveNoteBtn);
   } else {
