@@ -2,44 +2,53 @@ const fs = require("fs");
 const express = require("express");
 const path = require("path");
 
-module.exports = function(app) {
-app.get("/api/notes", function(req, res) {
-    fs.readFile("./db/db.json", "utf-8", function(err, data){
-        if (err) throw err
-        var notes = JSON.parse(data);
-            res.json(notes);
-        })
+var notes = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"));
+
+
+module.exports = function (app) {
+
+    app.get("/api/notes", function (req, res) {
+
+    res.json(notes);
     });
 
-app.post("/api/notes", function(req, res){
-    let newNote =req.body;
-    fs.readFile("./db/db.json", "utf-8", function(err, data){
-        if (err) throw err
-        var notes = JSON.parse(data);
-        notes.push(newNote); 
-        notes = JSON.stringify(notes);
-        fs.writeFile("./db/db.json", notes, function(err){
-            if (err) throw err
-        })
-            
-        })
-    res.json(newNote);
-    
+
+    app.get("/api/notes/:id", function(req, res) {
+
+    res.json(notes[Number(req.params.id)]);
 });
 
-app.get("/api/notes/:id", function(req, res) {
-    res.json(notes[req.params.id]);
-});
-
-app.delete("/api/notes/:id", function(req, res) {
-    notes.splice(req.params.id, 1);
-    updateDb();
-    console.log("deleted note"+params.id);
-});
-
-function updateDb() {
-    fs.writeFile("db/db.json",JSON.stringify(notes, "\t"), err=> {
+    app.post("/api/notes", function (req, res) {
+    let newNote = req.body;
+    let uniqueId = (notes.length).toString();
+    console.log(uniqueId);
+    newNote.id = uniqueId;
+    notes.push(newNote);
+    fs.writeFileSync("./db/db.json", JSON.stringify(notes), function (err) {
         if (err) throw err;
-        return true;
-    })};
+      });
+
+    res.json(notes);
+});
+
+  app.delete("/api/notes/:id", function(req, res) {
+      let noteId = req.params.id;
+      let newId = 0;
+    console.log("deleting noteId");
+    notes = notes.filter(currentNote =>{
+        return currentNote.id != noteId;
+    });
+    for (currentNote of notes) {
+        currentNote.id = newId.toString();
+        newId++;
+    }
+       res.json(notes);
+});
 }
+function updateDb() {
+    fs.writeFile("db/db.json",JSON.stringify(notes), function (err) {
+            if (err)
+                throw err;
+            return true;
+        })};
+
